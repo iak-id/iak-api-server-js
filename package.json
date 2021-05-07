@@ -1,0 +1,27 @@
+{
+  "name": "iak-api-server-js",
+  "version": "1.0.0",
+  "description": "Node.js-based SDK (server-side-only) to easily help integrating IAK API Services with your app.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iak-id/iak-api-server-js.git"
+  },
+  "keywords": [
+    "iak",
+    "mobilepulsa",
+    "mp",
+    "pulsa",
+    "sdk",
+    "api"
+  ],
+  "author": "Indobest Artha Kreasi <techsupport@mobilepulsa.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/iak-id/iak-api-server-js/issues"
+  },
+  "homepage": "https://github.com/iak-id/iak-api-server-js#readme"
+}
