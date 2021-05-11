@@ -1,15 +1,18 @@
 const { PREPAID, POSTPAID, USER_CREDENTIAL } = require('../../config');
 const { ApiException } = require('../errors');
 
-const { hashSign, sendPostRequest, validateParams } = require('../helpers');
+const { hashSign, sendPostRequest } = require('../helpers');
 const { INVALID_DATA } = require('../helpers').responseFormatterHelpers;
+const {
+  incorrectParametersMessage, isParamsExist, isParamsObject, validateRequiredParams,
+} = require('../helpers').validationHelpers;
 
 class IAK {
   constructor(params = null) {
-    if (params !== null) {
+    if (isParamsExist(params)) {
       const requiredParams = ['stage', 'userHp', 'apiKey'];
 
-      if (validateParams(params, requiredParams)) {
+      if (isParamsObject(params) && validateRequiredParams(params, requiredParams)) {
         this.stage = (params.stage === 'sandbox' || params.stage === 'production') ? params.stage : 'sandbox';
         this.userHp = params.userHp;
         this.apiKey = params.apiKey;
@@ -17,7 +20,12 @@ class IAK {
         return;
       }
 
-      throw new ApiException(400, INVALID_DATA.RESPONSE_CODE, INVALID_DATA.MESSAGE, 'Send the valid parameters');
+      throw new ApiException(
+        400,
+        INVALID_DATA.RESPONSE_CODE,
+        INVALID_DATA.MESSAGE,
+        incorrectParametersMessage(),
+      );
     }
 
     if (USER_CREDENTIAL.USER_HP !== undefined && USER_CREDENTIAL.STAGE !== undefined) {
@@ -33,7 +41,7 @@ class IAK {
       400,
       INVALID_DATA.RESPONSE_CODE,
       INVALID_DATA.MESSAGE,
-      'Send the valid parameters or fill your environment variable to create this object',
+      'The parameters you given are incorrect. Please send the valid parameters or fill your environment variable to create this object',
     );
   }
 

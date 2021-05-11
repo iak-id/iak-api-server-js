@@ -2,9 +2,11 @@ const { expect } = require('chai');
 
 const { USER_CREDENTIAL } = require('../../config');
 
+const { SUCCESS } = require('../../src/helpers').responseFormatterHelpers;
+
 function expectSuccessResults(testResult) {
-  expect(testResult.data.message).to.equal('SUCCESS');
-  expect(testResult.data.rc).to.equal('00');
+  expect(testResult.data.message).to.equal(SUCCESS.MESSAGE);
+  expect(testResult.data.rc).to.equal(SUCCESS.RESPONSE_CODE);
 }
 
 function expectFailedResults(testResult, expectedMessage, expectedRc) {
@@ -22,6 +24,10 @@ function getParams(params) {
   };
 }
 
+function isTestResultSuccess(testMessage, testResponseCode) {
+  return testMessage === SUCCESS.MESSAGE && testResponseCode === SUCCESS.RESPONSE_CODE;
+}
+
 function isArrayOfObjects(array) {
   return array.every((item) => typeof item === 'object');
 }
@@ -31,4 +37,5 @@ module.exports = {
   expectFailedResults,
   getParams,
   isArrayOfObjects,
+  isTestResultSuccess,
 };
