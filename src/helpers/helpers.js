@@ -1,9 +1,5 @@
 const crypto = require('crypto');
 
-const { sendRequest, sendPostRequest } = require('./requestHelpers');
-const validationHelpers = require('./validationHelpers');
-const responseFormatterHelpers = require('./responseFormatterHelpers');
-
 function hashSign(userHp, apikey, salt) {
   return crypto
     .createHash('md5')
@@ -18,8 +14,4 @@ function isEmptyString(string) {
 module.exports = {
   hashSign,
   isEmptyString,
-  sendRequest,
-  sendPostRequest,
-  responseFormatterHelpers,
-  validationHelpers,
 };

@@ -1,30 +1,37 @@
+const { ContentTypeError } = require('../errors/contentTypeError');
+const { MissingArgumentError } = require('../errors/missingArgumentError');
+
 function isParamsExist(params) {
   return params !== null;
 }
 
-function isParamsObject(params) {
-  return typeof params === 'object';
+function validateRequired(params) {
+  if (params === undefined || params === null) {
+    throw new MissingArgumentError();
+  }
 }
 
-function validateRequiredParams(params, requiredParams) {
-  let validParams = true;
+function validateContentType(params) {
+  if (typeof params !== 'object') {
+    throw new ContentTypeError();
+  }
+}
 
+function validateParamsExist(params, requiredParams) {
   requiredParams.forEach((item) => {
     if (!(item in params)) {
-      validParams = false;
+      throw new MissingArgumentError(`Field ${item} is missing from your argument. This field is required.`);
     }
   });
-
-  return validParams;
 }
 
-function incorrectParametersMessage() {
-  return 'The parameters you given are incorrect. Please send the valid parameters to create this object.';
+function validateParams(params, requiredParams) {
+  validateRequired(params);
+  validateContentType(params);
+  validateParamsExist(params, requiredParams);
 }
 
 module.exports = {
-  incorrectParametersMessage,
   isParamsExist,
-  isParamsObject,
-  validateRequiredParams,
+  validateParams,
 };

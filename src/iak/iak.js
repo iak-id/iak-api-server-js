@@ -1,31 +1,21 @@
 const { PREPAID, POSTPAID, USER_CREDENTIAL } = require('../../config');
-const { ApiException } = require('../errors');
+const { MissingArgumentError } = require('../errors/missingArgumentError');
+const { InvalidParameterValueError } = require('../errors/invalidParameterValueError');
 
-const { hashSign, sendPostRequest } = require('../helpers');
-const { INVALID_DATA } = require('../helpers').responseFormatterHelpers;
-const {
-  incorrectParametersMessage, isParamsExist, isParamsObject, validateRequiredParams,
-} = require('../helpers').validationHelpers;
+const { hashSign } = require('../helpers/helpers');
+const { isParamsExist, validateParams } = require('../helpers/validationHelpers');
 
 class IAK {
   constructor(params = null) {
     if (isParamsExist(params)) {
       const requiredParams = ['stage', 'userHp', 'apiKey'];
+      validateParams(params, requiredParams);
 
-      if (isParamsObject(params) && validateRequiredParams(params, requiredParams)) {
-        this.stage = (params.stage === 'sandbox' || params.stage === 'production') ? params.stage : 'sandbox';
-        this.userHp = params.userHp;
-        this.apiKey = params.apiKey;
+      this.stage = (params.stage === 'sandbox' || params.stage === 'production') ? params.stage : 'sandbox';
+      this.userHp = params.userHp;
+      this.apiKey = params.apiKey;
 
-        return;
-      }
-
-      throw new ApiException(
-        400,
-        INVALID_DATA.RESPONSE_CODE,
-        INVALID_DATA.MESSAGE,
-        incorrectParametersMessage(),
-      );
+      return;
     }
 
     if (USER_CREDENTIAL.USER_HP !== undefined && USER_CREDENTIAL.STAGE !== undefined) {
@@ -37,11 +27,8 @@ class IAK {
       return;
     }
 
-    throw new ApiException(
-      400,
-      INVALID_DATA.RESPONSE_CODE,
-      INVALID_DATA.MESSAGE,
-      'The parameters you given are incorrect. Please send the valid parameters or fill your environment variable to create this object',
+    throw new MissingArgumentError(
+      'Missing argument occurred. Please send the valid parameters or fill your environment variable to create this object',
     );
   }
 
@@ -50,25 +37,15 @@ class IAK {
   }
 
   getBaseUrl(type = 'prepaid') {
-    if (type === 'prepaid') {
+    if (type.toLowerCase() === 'prepaid') {
       return this.stage === 'production' ? PREPAID.PRODUCTION_ENDPOINT : PREPAID.SANDBOX_ENDPOINT;
     }
 
-    if (type === 'postpaid') {
+    if (type.toLowerCase() === 'postpaid') {
       return this.stage === 'production' ? POSTPAID.PRODUCTION_ENDPOINT : POSTPAID.SANDBOX_ENDPOINT;
     }
 
-    throw new ApiException(400, INVALID_DATA.RESPONSE_CODE, INVALID_DATA.MESSAGE, 'Send the valid service type');
-  }
-
-  async checkBalance() {
-    const url = `${this.getBaseUrl()}check-balance`;
-    const data = {
-      username: this.userHp,
-      sign: this.generateSign('bl'),
-    };
-
-    return sendPostRequest(url, data);
+    throw new InvalidParameterValueError();
   }
 }
 

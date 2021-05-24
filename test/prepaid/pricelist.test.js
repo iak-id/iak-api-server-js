@@ -1,81 +1,86 @@
-require('dotenv').config();
+const chai = require('chai');
+const chaiAsPromised = require('chai-as-promised');
 
-const { expect, AssertionError } = require('chai');
-const { describe, it } = require('mocha');
+const { expect } = chai;
+chai.use(chaiAsPromised);
+
+const sinon = require('sinon');
+const {
+  afterEach, beforeEach, describe, it,
+} = require('mocha');
 
 const { IAKPrepaid } = require('../../src');
-const { INVALID_DATA } = require('../../src/helpers').responseFormatterHelpers;
-const {
-  expectSuccessResults, expectFailedResults, isArrayOfObjects, isTestResultSuccess,
-} = require('../helpers');
+const { MissingArgumentError } = require('../../src/errors/missingArgumentError');
+const { isArrayOfObjects, isTestResultSuccess } = require('../helpers/helpers');
 
-describe('Prepaid Pricelist Service', () => {
+const { mockPricelistData } = require('./mock/pricelist');
+
+function expectSuccessResult(testCase) {
+  return expect(testCase)
+    .to.eventually.be.fulfilled
+    .and.to.eventually.satisfy((testResult) => isTestResultSuccess(testResult.data.rc))
+    .and.to.eventually.satisfy((testResult) => {
+      const { pricelist } = testResult.data;
+      return isArrayOfObjects(pricelist);
+    })
+    .and.to.eventually.equals(mockPricelistData);
+}
+
+const pricelistTest = () => {
   describe('Get user\'s pricelist data', () => {
-    it('Successfully get data without any type and operator parameter', async () => {
-      try {
-        const pricelistResult = await new IAKPrepaid().pricelist();
-        console.log(pricelistResult);
+    let stubs;
+    const iakPrepaid = new IAKPrepaid();
 
-        expectSuccessResults(pricelistResult);
-        expect(pricelistResult.data.pricelist).to.satisfy(isArrayOfObjects);
-      } catch (error) {
-        console.log(error);
-        throw new Error(`Test should be success: ${error.message}`);
-      }
+    beforeEach(() => {
+      stubs = sinon.stub(iakPrepaid, 'sendRequest');
     });
 
-    it('Successfully get games data type pricelist with no operator parameter', async () => {
-      try {
-        const pricelistResult = await new IAKPrepaid().pricelist({
-          type: 'game',
-        });
-        console.log(pricelistResult);
-
-        expectSuccessResults(pricelistResult);
-        expect(pricelistResult.data.pricelist).to.satisfy(isArrayOfObjects);
-      } catch (error) {
-        console.log(error);
-        throw new Error(`Test should be success: ${error.message}`);
-      }
+    afterEach(() => {
+      stubs.restore();
     });
 
-    it('Successfully get games data type pricelist with operator parameter', async () => {
-      try {
-        const pricelistResult = await new IAKPrepaid().pricelist({
-          type: 'game',
-          operator: 'mobile_legend',
-        });
-        console.log(pricelistResult);
+    it('Successfully get games pricelist data without any type and operator parameter', async () => {
+      stubs.returns(Promise.resolve(mockPricelistData));
 
-        expectSuccessResults(pricelistResult);
-        expect(pricelistResult.data.pricelist).to.satisfy(isArrayOfObjects);
-      } catch (error) {
-        console.log(error);
-        throw new Error(`Test should be success: ${error.message}`);
-      }
+      const testCase = iakPrepaid.pricelist();
+
+      return expectSuccessResult(testCase);
     });
 
-    it('Invalid Data with http status code equal to 400 when putting wrong parameters on pricelist function', async () => {
-      try {
-        const pricelistResult = await new IAKPrepaid().pricelist('params');
-        console.log(pricelistResult);
+    it('Successfully get games pricelist data with only type parameter', async () => {
+      stubs.returns(Promise.resolve(mockPricelistData));
+      const params = { type: 'game' };
 
-        if (isTestResultSuccess(pricelistResult.data.message, pricelistResult.data.rc)) {
-          expect.fail('Test is success when it should be failed');
-        } else {
-          expectFailedResults(pricelistResult, INVALID_DATA.MESSAGE, INVALID_DATA.RESPONSE_CODE);
-        }
+      const testCase = iakPrepaid.pricelist(params);
 
-        expectSuccessResults(pricelistResult);
-        expect(pricelistResult.data.pricelist).to.satisfy(isArrayOfObjects);
-      } catch (error) {
-        console.log(error);
-        if (!(error instanceof AssertionError)) {
-          expectFailedResults(error, INVALID_DATA.MESSAGE, INVALID_DATA.RESPONSE_CODE);
-        } else {
-          throw new Error('Test is success when it should be failed');
-        }
-      }
+      return expectSuccessResult(testCase);
+    });
+
+    it('Successfully get games pricelist data with type and operator parameter', async () => {
+      stubs.returns(Promise.resolve(mockPricelistData));
+      const params = {
+        type: 'game',
+        operator: 'mobile_legend',
+      };
+
+      const testCase = iakPrepaid.pricelist(params);
+
+      return expectSuccessResult(testCase);
+    });
+
+    it('Missing Argument when putting wrong parameters on pricelist function', async () => {
+      const params = {
+        operator: 'mobile_legend',
+      };
+
+      return expect(iakPrepaid.pricelist(params))
+        .to.eventually.be.rejectedWith(MissingArgumentError)
+        .and.to.eventually.have.own.property('message')
+        .that.equals('Field type is missing from your argument. This field is required.');
     });
   });
-});
+};
+
+module.exports = {
+  pricelistTest,
+};

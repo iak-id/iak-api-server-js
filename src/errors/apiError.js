@@ -1,8 +1,7 @@
-class ApiException extends Error {
+class ApiError extends Error {
   constructor(statusCode = 500, responseCode = '201', message = 'UNDEFINED RESPONSE CODE', details = '') {
     super(message);
 
-    this.name = 'Api Exception';
     this.status = 'failed';
     this.code = statusCode;
     this.data = {
@@ -14,5 +13,5 @@ class ApiException extends Error {
 }
 
 module.exports = {
-  ApiException,
+  ApiError,
 };

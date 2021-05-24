@@ -1,95 +1,53 @@
-require('dotenv').config();
+const chai = require('chai');
+const chaiAsPromised = require('chai-as-promised');
 
-const { expect, AssertionError } = require('chai');
-const { describe, it } = require('mocha');
+const { expect } = chai;
+chai.use(chaiAsPromised);
+
+const sinon = require('sinon');
+const {
+  afterEach, beforeEach, describe, it,
+} = require('mocha');
 
 const { IAKPrepaid } = require('../src');
+const { isTestResultSuccess } = require('./helpers/helpers');
 
-const { INVALID_DATA, WRONG_AUTHENTICATION } = require('../src/helpers').responseFormatterHelpers;
-const {
-  expectSuccessResults, expectFailedResults, getParams, isTestResultSuccess,
-} = require('./helpers');
+const mockBalanceSuccessData = {
+  status: 'success',
+  code: 200,
+  data: {
+    balance: 10000000,
+    message: 'SUCCESS',
+    rc: '00',
+  },
+};
 
-describe('Check Balance Service', () => {
+const checkBalanceTest = () => {
   describe('Get user\'s balance data', () => {
-    it('Successfully get data', async () => {
-      try {
-        const checkBalanceResult = await new IAKPrepaid().checkBalance();
-        console.log(checkBalanceResult);
+    let stubs;
+    const iakPrepaid = new IAKPrepaid();
 
-        expectSuccessResults(checkBalanceResult);
-      } catch (error) {
-        console.log(error);
-        throw new Error(`Test should be success: ${error.message}`);
-      }
+    beforeEach(() => {
+      stubs = sinon.stub(iakPrepaid, 'sendRequest');
     });
 
-    it('Wrong Authentication with http status code equal to 200 when sign is incorrect', async () => {
-      try {
-        const params = getParams({
-          apiKey: 'abcdefghijkl',
-        });
-
-        const checkBalanceResult = await new IAKPrepaid(params).checkBalance();
-        console.log(checkBalanceResult);
-
-        if (isTestResultSuccess(checkBalanceResult.data.message, checkBalanceResult.data.rc)) {
-          expect.fail('Test is success when it should be failed');
-        } else {
-          expectFailedResults(
-            checkBalanceResult,
-            WRONG_AUTHENTICATION.MESSAGE,
-            WRONG_AUTHENTICATION.RESPONSE_CODE,
-          );
-        }
-      } catch (error) {
-        console.log(error);
-        throw new Error('Test is success when it should be failed');
-      }
+    afterEach(() => {
+      stubs.restore();
     });
 
-    it('Invalid Data with http status code equal to 400 when userHp is incorrect', async () => {
-      try {
-        const params = getParams({
-          userHp: 'abcdefghijkl',
-        });
+    it('Successfully get data', () => {
+      stubs.returns(Promise.resolve(mockBalanceSuccessData));
 
-        const checkBalanceResult = await new IAKPrepaid(params).checkBalance();
-        console.log(checkBalanceResult);
+      const testCase = iakPrepaid.checkBalance();
 
-        if (isTestResultSuccess(checkBalanceResult.data.message, checkBalanceResult.data.rc)) {
-          expect.fail('Test is success when it should be failed');
-        } else {
-          expectFailedResults(checkBalanceResult, INVALID_DATA.MESSAGE, INVALID_DATA.RESPONSE_CODE);
-        }
-      } catch (error) {
-        console.log(error);
-        if (!(error instanceof AssertionError)) {
-          expectFailedResults(error, INVALID_DATA.MESSAGE, INVALID_DATA.RESPONSE_CODE);
-        } else {
-          throw new Error('Test is success when it should be failed');
-        }
-      }
-    });
-
-    it('Invalid Data with http status code equal to 400 when putting wrong parameters on IAKPrepaid', async () => {
-      try {
-        const checkBalanceResult = await new IAKPrepaid('params').checkBalance();
-        console.log(checkBalanceResult);
-
-        if (checkBalanceResult.data.message === 'SUCCESS' && checkBalanceResult.data.rc === '00') {
-          expect.fail('Test is success when it should be failed');
-        } else {
-          expectFailedResults(checkBalanceResult, 'INVALID DATA', '208');
-        }
-      } catch (error) {
-        console.log(error);
-        if (!(error instanceof AssertionError)) {
-          expectFailedResults(error, 'INVALID DATA', '208');
-        } else {
-          throw new Error('Test is success when it should be failed');
-        }
-      }
+      return expect(testCase)
+        .to.eventually.be.fulfilled
+        .and.to.eventually.satisfy((testResult) => isTestResultSuccess(testResult.data.rc))
+        .and.to.eventually.equals(mockBalanceSuccessData);
     });
   });
-});
+};
+
+module.exports = {
+  checkBalanceTest,
+};

@@ -1,26 +1,33 @@
 const { IAK } = require('./iak');
+const { ApiError } = require('../errors/apiError');
 
-const { sendPostRequest } = require('../helpers');
+const { sendApiRequest } = require('../helpers/requestHelpers');
 
 class IAKPostpaid extends IAK {
-  getMainUrl() {
-    return `${this.getBaseUrl('postpaid')}api/v1/bill/check/`;
+  constructor() {
+    super();
+    this.baseEndpoint = 'api/v1/bill/check/';
+    this.baseReceiptEndpoint = 'api/v1/download/';
   }
 
-  getReceiptUrl(env, trId) {
-    return `${this.getBaseUrl('postpaid')}api/v1/download/${trId}/1`;
+  generateReceiptEndpoint(trId) {
+    return `${this.baseReceiptEndpoint}${trId}/1`;
+  }
+
+  async sendRequest(endpoint, data) {
+    return sendApiRequest('postpaid', `${this.getBaseUrl('postpaid')}${endpoint}`, data).catch((error) => {
+      throw new ApiError(error.code, error.data.rc, error.message);
+    });
   }
 
   async pricelist() {
-    const url = this.getMainUrl();
-
     const data = {
       commands: 'pricelist-pasca',
       username: this.userHp,
       sign: this.generateSign('pl'),
     };
 
-    return sendPostRequest(url, data);
+    return this.sendRequest(this.baseEndpoint, data);
   }
 }
 
