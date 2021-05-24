@@ -9,8 +9,8 @@ const {
   afterEach, beforeEach, describe, it,
 } = require('mocha');
 
-const { IAKPrepaid } = require('../src');
-const { isTestResultSuccess } = require('./helpers/helpers');
+const { IAKPrepaid } = require('../../src');
+const { isTestResultSuccess } = require('../helpers/helpers');
 
 const mockBalanceSuccessData = {
   status: 'success',
