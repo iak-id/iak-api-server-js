@@ -1,16 +1,13 @@
 const { IAK } = require('./iak');
-const { ApiError } = require('../errors/apiError');
 const { MissingArgumentError } = require('../errors/missingArgumentError');
 
 const { isEmptyString } = require('../helpers/helpers');
-const { sendApiRequest } = require('../helpers/requestHelpers');
 const { isParamsExist, validateParams } = require('../helpers/validationHelpers');
 
 class IAKPrepaid extends IAK {
-  async sendRequest(endpoint, data) {
-    return sendApiRequest('prepaid', `${this.getBaseUrl('prepaid')}${endpoint}`, data).catch((error) => {
-      throw new ApiError(error.code, error.data.rc, error.message);
-    });
+  constructor(params = null) {
+    super(params);
+    this.apiType = 'prepaid';
   }
 
   async checkBalance() {
@@ -28,15 +25,14 @@ class IAKPrepaid extends IAK {
     let status = 'all';
 
     if (isParamsExist(params)) {
-      if (params.type === undefined && params.operator !== undefined) {
-        throw new MissingArgumentError('Field type is missing from your argument. This field is required.');
-      }
       if (params.type !== undefined) {
         endpoint += !isEmptyString(params.type) ? `/${params.type}` : '';
 
         if (params.operator !== undefined) {
           endpoint += (!isEmptyString(params.type) && !isEmptyString(params.operator)) ? `/${params.operator}` : '';
         }
+      } else if (params.operator !== undefined) {
+        throw new MissingArgumentError('Field type is missing from your argument. This field is required.');
       }
 
       if (params.status !== undefined) {
@@ -53,7 +49,7 @@ class IAKPrepaid extends IAK {
     return this.sendRequest(endpoint, data);
   }
 
-  async topUp(params) {
+  async topUp(params = null) {
     const requiredParams = ['refId', 'customerId', 'productCode'];
     validateParams(params, requiredParams);
 
@@ -69,7 +65,7 @@ class IAKPrepaid extends IAK {
     return this.sendRequest(endpoint, data);
   }
 
-  async checkStatus(params) {
+  async checkStatus(params = null) {
     const requiredParams = ['refId'];
     validateParams(params, requiredParams);
 
@@ -83,7 +79,7 @@ class IAKPrepaid extends IAK {
     return this.sendRequest(endpoint, data);
   }
 
-  async inquiryGameId(params) {
+  async inquiryGameId(params = null) {
     const requiredParams = ['gameCode', 'customerId'];
     validateParams(params, requiredParams);
 
@@ -98,7 +94,7 @@ class IAKPrepaid extends IAK {
     return this.sendRequest(endpoint, data);
   }
 
-  async inquiryGameServer(params) {
+  async inquiryGameServer(params = null) {
     const requiredParams = ['gameCode'];
     validateParams(params, requiredParams);
 
@@ -112,7 +108,7 @@ class IAKPrepaid extends IAK {
     return this.sendRequest(endpoint, data);
   }
 
-  async inquiryPln(params) {
+  async inquiryPln(params = null) {
     const requiredParams = ['customerId'];
     validateParams(params, requiredParams);
 

@@ -1,16 +1,10 @@
-const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
-
-const { expect } = chai;
-chai.use(chaiAsPromised);
-
 const sinon = require('sinon');
 const {
   afterEach, beforeEach, describe, it,
 } = require('mocha');
 
 const { IAKPrepaid } = require('../../src');
-const { isTestResultSuccess } = require('../helpers/helpers');
+const { expectSuccessPrepaid } = require('../helpers/helpers');
 
 const mockBalanceSuccessData = {
   status: 'success',
@@ -40,10 +34,7 @@ const checkBalanceTest = () => {
 
       const testCase = iakPrepaid.checkBalance();
 
-      return expect(testCase)
-        .to.eventually.be.fulfilled
-        .and.to.eventually.satisfy((testResult) => isTestResultSuccess(testResult.data.rc))
-        .and.to.eventually.equals(mockBalanceSuccessData);
+      return expectSuccessPrepaid(testCase, mockBalanceSuccessData);
     });
   });
 };

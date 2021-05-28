@@ -1,9 +1,3 @@
-const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
-
-const { expect } = chai;
-chai.use(chaiAsPromised);
-
 const sinon = require('sinon');
 const {
   afterEach, beforeEach, describe, it,
@@ -12,7 +6,7 @@ const {
 const { IAKPrepaid } = require('../../src');
 const { ApiError } = require('../../src/errors/apiError');
 const { TRANSACTION_NOT_FOUND } = require('../../src/helpers/responseFormatterHelpers');
-const { isTestResultSuccess } = require('../helpers/helpers');
+const { expectSuccessPrepaid, expectFailedDueToThrowingError } = require('../helpers/helpers');
 
 const { mockCheckStatusData } = require('./mock/check-status');
 
@@ -31,26 +25,25 @@ const checkStatusTest = () => {
 
     it('Find existing transaction successfully', async () => {
       stubs.returns(Promise.resolve(mockCheckStatusData));
+
       const params = { refId: 'mzCHrMKjcq' };
 
       const testCase = iakPrepaid.checkStatus(params);
 
-      return expect(testCase)
-        .to.eventually.be.fulfilled
-        .and.to.eventually.satisfy((testResult) => isTestResultSuccess(testResult.data.rc))
-        .and.to.eventually.equals(mockCheckStatusData);
+      return expectSuccessPrepaid(testCase, mockCheckStatusData);
     });
 
     it('Failed to find not existing transaction', async () => {
-      const apiError = new ApiError(
+      const transactionNotFoundError = new ApiError(
         400, TRANSACTION_NOT_FOUND.RESPONSE_CODE, TRANSACTION_NOT_FOUND.MESSAGE,
       );
-      stubs.throws(apiError);
+      stubs.throws(transactionNotFoundError);
+
       const params = { refId: '3YYDY3nXDT' };
 
       const testCase = iakPrepaid.checkStatus(params);
 
-      return expect(testCase).to.eventually.be.rejectedWith(apiError);
+      return expectFailedDueToThrowingError(testCase, transactionNotFoundError);
     });
   });
 };
