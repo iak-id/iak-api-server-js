@@ -3,10 +3,13 @@ const { MissingArgumentError } = require('../errors/missingArgumentError');
 const { InvalidParameterValueError } = require('../errors/invalidParameterValueError');
 
 const { hashSign } = require('../helpers/helpers');
+const { sendApiRequest } = require('../helpers/requestHelpers');
 const { isParamsExist, validateParams } = require('../helpers/validationHelpers');
 
 class IAK {
   constructor(params = null) {
+    this.apiType = null;
+
     if (isParamsExist(params)) {
       const requiredParams = ['stage', 'userHp', 'apiKey'];
       validateParams(params, requiredParams);
@@ -46,6 +49,10 @@ class IAK {
     }
 
     throw new InvalidParameterValueError();
+  }
+
+  async sendRequest(endpoint, data) {
+    return sendApiRequest(this.apiType, `${this.getBaseUrl(this.apiType)}${endpoint}`, data);
   }
 }
 
