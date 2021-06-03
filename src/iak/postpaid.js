@@ -3,7 +3,7 @@ const { MissingArgumentError } = require('../errors/missingArgumentError');
 
 const { isEmptyString } = require('../helpers/helpers');
 const { sendDownloadReceiptRequest } = require('../helpers/requestHelpers');
-const { isParamsExist, validateParams } = require('../helpers/validationHelpers');
+const { isParamsExist, validateContentType, validateParams } = require('../helpers/validationHelpers');
 
 class IAKPostpaid extends IAK {
   constructor(params = null) {
@@ -27,6 +27,8 @@ class IAKPostpaid extends IAK {
     let province;
 
     if (isParamsExist(params)) {
+      validateContentType(params);
+
       if (params.type !== undefined) {
         endpoint += !isEmptyString(params.type) ? `${params.type}` : '';
 

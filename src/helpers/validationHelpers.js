@@ -33,5 +33,6 @@ function validateParams(params, requiredParams) {
 
 module.exports = {
   isParamsExist,
+  validateContentType,
   validateParams,
 };
