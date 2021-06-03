@@ -33,7 +33,8 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
-    "dotenv": "^9.0.1"
+    "dotenv": "^9.0.1",
+    "xml2js": "^0.4.23"
   },
   "bugs": {
     "url": "https://github.com/iak-id/iak-api-server-js/issues"

@@ -10,11 +10,11 @@ module.exports = {
     PRODUCTION_ENDPOINT: 'https://mobilepulsa.net/',
   },
   USER_CREDENTIAL: {
-    USER_HP: process.env.USER_HP,
-    STAGE: process.env.STAGE,
+    USER_HP: process.env.IAK_USER_HP,
+    STAGE: process.env.IAK_STAGE,
     API_KEY: {
-      SANDBOX: process.env.SANDBOX_API_KEY,
-      PRODUCTION: process.env.PRODUCTION_API_KEY,
+      SANDBOX: process.env.IAK_SANDBOX_API_KEY,
+      PRODUCTION: process.env.IAK_PRODUCTION_API_KEY,
     },
   },
 };

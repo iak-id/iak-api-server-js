@@ -1,9 +1,3 @@
-const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
-
-const { expect } = chai;
-chai.use(chaiAsPromised);
-
 const sinon = require('sinon');
 const {
   afterEach, beforeEach, describe, it,
@@ -13,7 +7,7 @@ const { IAKPrepaid } = require('../../src');
 const { ApiError } = require('../../src/errors/apiError');
 const { CODE_NOT_FOUND, NUMBER_NOT_MATCH_WITH_OPERATOR } = require('../../src/helpers/responseFormatterHelpers');
 
-const { isTestResultSuccess } = require('../helpers/helpers');
+const { expectSuccessPrepaid, expectFailedDueToThrowingError } = require('../helpers/helpers');
 const { generateTopUpRequest } = require('../helpers/transactionHelpers');
 
 const mockTopUpData = require('./mock/top-up');
@@ -36,34 +30,33 @@ const topUpTest = () => {
 
       const testCase = iakPrepaid.topUp(generateTopUpRequest());
 
-      return expect(testCase)
-        .to.eventually.be.fulfilled
-        .and.to.eventually.satisfy((testResult) => isTestResultSuccess(testResult.data.rc))
-        .and.to.eventually.equals(mockTopUpData.success);
+      return expectSuccessPrepaid(testCase, mockTopUpData.success);
     });
 
     it('Number Not Match with Operator with http status code equal to 400', async () => {
-      const apiError = new ApiError(
+      const numberNotMatchWithOperatorError = new ApiError(
         400, NUMBER_NOT_MATCH_WITH_OPERATOR.RESPONSE_CODE, NUMBER_NOT_MATCH_WITH_OPERATOR.MESSAGE,
       );
-      stubs.throws(apiError);
-      const params = { customerId: '08123456789' };
+      stubs.throws(numberNotMatchWithOperatorError);
 
-      const testCase = iakPrepaid.topUp(generateTopUpRequest(params));
+      const params = generateTopUpRequest({ customerId: '08123456789' });
 
-      return expect(testCase).to.eventually.be.rejectedWith(apiError);
+      const testCase = iakPrepaid.topUp(params);
+
+      return expectFailedDueToThrowingError(testCase, numberNotMatchWithOperatorError);
     });
 
     it('Code Not Found with http status code equal to 400', async () => {
-      const apiError = new ApiError(
+      const codeNotFoundError = new ApiError(
         400, CODE_NOT_FOUND.RESPONSE_CODE, CODE_NOT_FOUND.MESSAGE,
       );
-      stubs.throws(apiError);
-      const params = { productCode: 'xld25001' };
+      stubs.throws(codeNotFoundError);
 
-      const testCase = iakPrepaid.topUp(generateTopUpRequest(params));
+      const params = generateTopUpRequest({ productCode: 'xld25001' });
 
-      return expect(testCase).to.eventually.be.rejectedWith(apiError);
+      const testCase = iakPrepaid.topUp(params);
+
+      return expectFailedDueToThrowingError(testCase, codeNotFoundError);
     });
   });
 };
