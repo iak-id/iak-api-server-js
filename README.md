@@ -56,7 +56,7 @@ To see the difference with the Version 1, you can see this [link](https://api.ia
 ## Installation
 
 ```bash
-npm install iak-api-server-js
+npm install @iak-id/iak-api-server-js
 ```
 
 ## Usage
