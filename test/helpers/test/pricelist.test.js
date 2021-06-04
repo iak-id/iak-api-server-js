@@ -13,11 +13,17 @@ const {
   expectFailedDueToMissingParameter, isArrayOfObjects, isTestResultSuccess,
 } = require('../helpers');
 
-function expectSuccessResult(testCase, mockPricelistData) {
+function expectSuccessResult(apiType, testCase, mockPricelistData) {
   return expect(testCase)
     .to.eventually.be.fulfilled
     .and.to.eventually.satisfy((testResult) => isTestResultSuccess(testResult.data.rc))
-    .and.to.eventually.satisfy((testResult) => isArrayOfObjects(testResult.data.pricelist))
+    .and.to.eventually.satisfy((testResult) => {
+      if (apiType === 'postpaid') {
+        return isArrayOfObjects(testResult.data.pasca);
+      }
+
+      return isArrayOfObjects(testResult.data.pricelist);
+    })
     .and.to.eventually.equals(mockPricelistData);
 }
 
@@ -38,7 +44,7 @@ const pricelistTest = (apiType, iakServices, mockPricelistData) => {
 
       const testCase = iakServices.pricelist();
 
-      return expectSuccessResult(testCase, mockPricelistData);
+      return expectSuccessResult(apiType, testCase, mockPricelistData);
     });
 
     it('Successfully get games pricelist data with only type parameter', async () => {
@@ -53,7 +59,7 @@ const pricelistTest = (apiType, iakServices, mockPricelistData) => {
 
       const testCase = iakServices.pricelist(params);
 
-      return expectSuccessResult(testCase, mockPricelistData);
+      return expectSuccessResult(apiType, testCase, mockPricelistData);
     });
 
     it('Successfully get games pricelist data with type and operator parameter', async () => {
@@ -74,7 +80,7 @@ const pricelistTest = (apiType, iakServices, mockPricelistData) => {
 
       const testCase = iakServices.pricelist(params);
 
-      return expectSuccessResult(testCase, mockPricelistData);
+      return expectSuccessResult(apiType, testCase, mockPricelistData);
     });
 
     it('Missing Argument when putting wrong parameters on pricelist function', async () => {

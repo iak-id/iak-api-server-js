@@ -2,7 +2,7 @@ const mockPricelistData = {
   status: 'success',
   code: 200,
   data: {
-    pricelist: [
+    pasca: [
       {
         code: 'PDAMKAB.BOGOR',
         name: 'PDAM KAB. BOGOR (JABAR)',

@@ -3,7 +3,7 @@ const { MissingArgumentError } = require('../errors/missingArgumentError');
 
 const { isEmptyString } = require('../helpers/helpers');
 const { sendDownloadReceiptRequest } = require('../helpers/requestHelpers');
-const { isParamsExist, validateParams } = require('../helpers/validationHelpers');
+const { isParamsExist, validateContentType, validateParams } = require('../helpers/validationHelpers');
 
 class IAKPostpaid extends IAK {
   constructor(params = null) {
@@ -27,6 +27,8 @@ class IAKPostpaid extends IAK {
     let province;
 
     if (isParamsExist(params)) {
+      validateContentType(params);
+
       if (params.type !== undefined) {
         endpoint += !isEmptyString(params.type) ? `${params.type}` : '';
 
@@ -57,12 +59,12 @@ class IAKPostpaid extends IAK {
   }
 
   async inquiry(params = null) {
-    const requiredParams = ['refId', 'customerId', 'productCode'];
+    const requiredParams = ['refId', 'hp', 'code'];
     validateParams(params, requiredParams);
 
-    if (params.productCode.toLowerCase() === 'bpjs') {
+    if (params.code.toLowerCase() === 'bpjs') {
       validateParams(params, ['month']);
-    } else if (params.productCode.toLowerCase() === 'esamsat.jabar') {
+    } else if (params.code.toLowerCase() === 'esamsat.jabar') {
       validateParams(params, ['nomorIdentitas']);
     }
 
@@ -70,14 +72,14 @@ class IAKPostpaid extends IAK {
       commands: 'inq-pasca',
       username: this.userHp,
       ref_id: params.refId,
-      hp: params.customerId,
-      code: params.productCode,
+      hp: params.hp,
+      code: params.code,
       sign: this.generateSign(params.refId),
     };
 
-    if (params.productCode.toLowerCase() === 'bpjs') {
+    if (params.code.toLowerCase() === 'bpjs') {
       data.month = params.month;
-    } else if (params.productCode.toLowerCase() === 'esamsat.jabar') {
+    } else if (params.code.toLowerCase() === 'esamsat.jabar') {
       data.nomor_identitas = params.nomorIdentitas;
     }
 

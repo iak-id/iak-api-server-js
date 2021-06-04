@@ -31,8 +31,8 @@ const inquiryTest = () => {
 
       const params = {
         refId: '8Qsthbivuw',
-        customerId: inquiryTestCase.success,
-        productCode: 'BPJS',
+        hp: inquiryTestCase.success,
+        code: 'BPJS',
         month: '2',
       };
 
@@ -47,8 +47,8 @@ const inquiryTest = () => {
 
       const params = {
         refId: '8Qsthbivuw',
-        customerId: inquiryTestCase.timeout,
-        productCode: 'BPJS',
+        hp: inquiryTestCase.timeout,
+        code: 'BPJS',
         month: '2',
       };
 
@@ -65,8 +65,8 @@ const inquiryTest = () => {
 
       const params = {
         refId: '8Qsthbivuw',
-        customerId: inquiryTestCase.invoiceHasBeenPaid,
-        productCode: 'BPJS',
+        hp: inquiryTestCase.invoiceHasBeenPaid,
+        code: 'BPJS',
         month: '2',
       };
 
@@ -83,8 +83,8 @@ const inquiryTest = () => {
 
       const params = {
         refId: '8Qsthbivuw',
-        customerId: inquiryTestCase.incorrectDestinationNumber,
-        productCode: 'BPJS',
+        hp: inquiryTestCase.incorrectDestinationNumber,
+        code: 'BPJS',
         month: '2',
       };
 
@@ -97,8 +97,8 @@ const inquiryTest = () => {
       const expectedErrorMessage = 'Field month is missing from your argument. This field is required.';
       const params = {
         refId: '8Qsthbivuw',
-        customerId: inquiryTestCase.success,
-        productCode: 'BPJS',
+        hp: inquiryTestCase.success,
+        code: 'BPJS',
       };
 
       const testCase = iakPostpaid.inquiry(params);

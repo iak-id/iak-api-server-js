@@ -51,7 +51,7 @@ async function sendApiRequest(apiType, url, data = null) {
   return sendRequest('POST', url, data).then((response) => {
     if (apiType === 'postpaid' && 'pasca' in response.data.data) {
       return successResponse({
-        pricelist: response.data.data.pasca,
+        pasca: response.data.data.pasca,
         message: SUCCESS.MESSAGE,
         rc: SUCCESS.RESPONSE_CODE,
       });

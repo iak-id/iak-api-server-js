@@ -2,7 +2,7 @@ const { IAK } = require('./iak');
 const { MissingArgumentError } = require('../errors/missingArgumentError');
 
 const { isEmptyString } = require('../helpers/helpers');
-const { isParamsExist, validateParams } = require('../helpers/validationHelpers');
+const { isParamsExist, validateContentType, validateParams } = require('../helpers/validationHelpers');
 
 class IAKPrepaid extends IAK {
   constructor(params = null) {
@@ -25,6 +25,8 @@ class IAKPrepaid extends IAK {
     let status = 'all';
 
     if (isParamsExist(params)) {
+      validateContentType(params);
+
       if (params.type !== undefined) {
         endpoint += !isEmptyString(params.type) ? `/${params.type}` : '';
 
