@@ -66,7 +66,7 @@ npm install @iak-id/iak-api-server-js
 You can use this snippet code to use our check balance service on prepaid API to get started use our SDK.
 
 ```js
-const { IAKPrepaid } = require('iak-api-server-js');
+const { IAKPrepaid } = require('@iak-id/iak-api-server-js');
 
 const credential = {
   userHp: 'your-username',
@@ -111,7 +111,7 @@ IAK_PRODUCTION_API_KEY=your-api-production-key
 
 After setting your credential, you can construct your class depending on service you want to use.
 ```js
-const { IAKPrepaid, IAKPostpaid } = require('iak-api-server-js');
+const { IAKPrepaid, IAKPostpaid } = require('@iak-id/iak-api-server-js');
 
 /*if you set your credential first on environment variable*/
 const iakPrepaid = new IAKPrepaid();
@@ -131,7 +131,7 @@ const iakPostpaid = new IAKPostpaid(credential);
 Then, you can call the functions in the IAKPrepaid or IAKPostpaid in these ways depending on your code style.
 
 ```js
-const { IAKPrepaid } = require('iak-api-server-js');
+const { IAKPrepaid } = require('@iak-id/iak-api-server-js');
 
 const iakPrepaid = new IAKPrepaid();
 const checkBalanceResult = iakPrepaid.checkBalance();
@@ -139,7 +139,7 @@ const checkStatusResult = iakPrepaid.checkStatus(params);
 
 /*or*/
 
-const { IAKPrepaid } = require('iak-api-server-js');
+const { IAKPrepaid } = require('@iak-id/iak-api-server-js');
 
 const checkBalanceResult = new IAKPrepaid().checkBalance();
 const checkStatusResult = new IAKPrepaid().checkStatus(params);
@@ -153,7 +153,7 @@ You have to use async call to use this SDK properly, these are some ways to do i
 
 1. Promise
 ```js
-const { IAKPrepaid } = require('iak-api-server-js');
+const { IAKPrepaid } = require('@iak-id/iak-api-server-js');
 
 new IAKPrepaid().checkBalance().then((response) => {
   console.log(response);
@@ -165,7 +165,7 @@ new IAKPrepaid().checkBalance().then((response) => {
 2. Async/Await
 
 ```js
-const { IAKPrepaid } = require('iak-api-server-js');
+const { IAKPrepaid } = require('@iak-id/iak-api-server-js');
 
 (async () => {
   try {
@@ -197,7 +197,7 @@ Functions you can use to check or see your IAK balance.
 #### Code request example
 
 ```js
-const { IAKPrepaid } = require('iak-api-server-js');
+const { IAKPrepaid } = require('@iak-id/iak-api-server-js');
 
 new IAKPrepaid().checkBalance().then((response) => {
   console.log(response);
@@ -234,7 +234,7 @@ You see list of product type and operator on this [link](https://api.iak.id/docs
 
 #### Code request example (all products no matter what the status is)
 ```js
-const { IAKPrepaid } = require('iak-api-server-js');
+const { IAKPrepaid } = require('@iak-id/iak-api-server-js');
 
 new IAKPrepaid().pricelist().then((response) => {
   console.log(response);
@@ -245,7 +245,7 @@ new IAKPrepaid().pricelist().then((response) => {
 
 #### Code request example (only game type products)
 ```js
-const { IAKPrepaid } = require('iak-api-server-js');
+const { IAKPrepaid } = require('@iak-id/iak-api-server-js');
 
 new IAKPrepaid().pricelist({ 
   type: 'game' 
@@ -258,7 +258,7 @@ new IAKPrepaid().pricelist({
 
 #### Code request example (only mobile legends game products)
 ```js
-const { IAKPrepaid } = require('iak-api-server-js');
+const { IAKPrepaid } = require('@iak-id/iak-api-server-js');
 
 new IAKPrepaid().pricelist({ 
   type: 'game', 
@@ -272,7 +272,7 @@ new IAKPrepaid().pricelist({
 
 #### Code request example (only active game products)
 ```js
-const { IAKPrepaid } = require('iak-api-server-js');
+const { IAKPrepaid } = require('@iak-id/iak-api-server-js');
 
 new IAKPrepaid().pricelist({ 
   type: 'game', 
@@ -346,7 +346,7 @@ You can see [our price list](#prepaid-price-list) to see the list of product cod
 
 #### Code request example
 ```js
-const { IAKPrepaid } = require('iak-api-server-js');
+const { IAKPrepaid } = require('@iak-id/iak-api-server-js');
 
 new IAKPrepaid().topUp({
   customerId: '081357922222',
@@ -391,7 +391,7 @@ You must use the same refId you used to top up to see the transaction status.
 
 #### Code request example
 ```js
-const { IAKPrepaid } = require('iak-api-server-js');
+const { IAKPrepaid } = require('@iak-id/iak-api-server-js');
 
 new IAKPrepaid().checkStatus({
   refId: '1IEUV4FCGi',
@@ -436,7 +436,7 @@ You can see the list of the game code and customer game id format in this
 
 #### Code request example
 ```js
-const { IAKPrepaid } = require('iak-api-server-js');
+const { IAKPrepaid } = require('@iak-id/iak-api-server-js');
 
 new IAKPrepaid().inquiryGameId({
   customerId: '156378300|8483',
@@ -476,7 +476,7 @@ You can see the list of the game code in this
 
 #### Code request example
 ```js
-const { IAKPrepaid } = require('iak-api-server-js');
+const { IAKPrepaid } = require('@iak-id/iak-api-server-js');
 
 new IAKPrepaid().inquiryGameServer({
   gameCode: '103',
@@ -518,7 +518,7 @@ You can use both customer subscriber id or customer electric meter number in the
 
 #### Code request example
 ```js
-const { IAKPrepaid } = require('iak-api-server-js');
+const { IAKPrepaid } = require('@iak-id/iak-api-server-js');
 
 new IAKPrepaid().inquiryPln({ 
   customerId: '12345678901' 
@@ -593,7 +593,7 @@ You see list of product type on this [link](https://api.iak.id/docs/reference/do
 
 #### Code request example (all products no matter what the status is)
 ```js
-const { IAKPostpaid } = require('iak-api-server-js');
+const { IAKPostpaid } = require('@iak-id/iak-api-server-js');
 
 new IAKPostpaid().pricelist().then((response) => {
   console.log(response);
@@ -604,7 +604,7 @@ new IAKPostpaid().pricelist().then((response) => {
 
 #### Code request example (only bpjs type products)
 ```js
-const { IAKPostpaid } = require('iak-api-server-js');
+const { IAKPostpaid } = require('@iak-id/iak-api-server-js');
 
 new IAKPostpaid().pricelist({ 
   type: 'bpjs' 
@@ -617,7 +617,7 @@ new IAKPostpaid().pricelist({
 
 #### Code request example (only pdam jakarta products)
 ```js
-const { IAKPostpaid } = require('iak-api-server-js');
+const { IAKPostpaid } = require('@iak-id/iak-api-server-js');
 
 new IAKPostpaid().pricelist({ 
   type: 'pdam', 
@@ -631,7 +631,7 @@ new IAKPostpaid().pricelist({
 
 #### Code request example (only active pdam products)
 ```js
-const { IAKPostpaid } = require('iak-api-server-js');
+const { IAKPostpaid } = require('@iak-id/iak-api-server-js');
 
 new IAKPostpaid().pricelist({ 
   type: 'pdam', 
@@ -693,7 +693,7 @@ on the Core API section on the Postpaid Section.
 
 #### Code request example
 ```js
-const { IAKPostpaid } = require('iak-api-server-js');
+const { IAKPostpaid } = require('@iak-id/iak-api-server-js');
 
 /*PDAM Jakarta products*/
 const inquiryRequest = {
@@ -767,7 +767,7 @@ Unlike postpaid inquiry services, there are no difference between postpaid produ
 
 #### Code request example
 ```js
-const { IAKPostpaid } = require('iak-api-server-js');
+const { IAKPostpaid } = require('@iak-id/iak-api-server-js');
 
 new IAKPostpaid().payment({ 
   trId: 9922721
@@ -821,7 +821,7 @@ Postpaid services to check your customer's postpaid transaction status.
 
 #### Code request example
 ```js
-const { IAKPostpaid } = require('iak-api-server-js');
+const { IAKPostpaid } = require('@iak-id/iak-api-server-js');
 
 new IAKPostpaid().checkStatus({ 
   refId: 'TPhgBfgIU4' 
@@ -905,7 +905,7 @@ Postpaid services to get your customer's postpaid transaction receipt.
 
 #### Code request example
 ```js
-const { IAKPostpaid } = require('iak-api-server-js');
+const { IAKPostpaid } = require('@iak-id/iak-api-server-js');
 
 new IAKPostpaid().downloadReceipt({ 
   trId: '9922721' 
