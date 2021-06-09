@@ -1,6 +1,6 @@
 {
   "name": "@iak-id/iak-api-server-js",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0",
   "description": "Node.js-based SDK (server-side-only) to easily help integrating IAK API Services with your app.",
   "main": "index.js",
   "scripts": {
