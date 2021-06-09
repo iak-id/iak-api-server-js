@@ -59,6 +59,10 @@ This library is supported by the following Node.js versions
 
 ---
 
+## Changelogs
+You can check any updates or improvements we have done to this library to make this library more helpful for you on this [link]().
+
+---
+
 ## Contributing
 You can contribute on the development of this project by [opening an issue](https://github.com/iak-id/iak-api-server-js/issues) or [submitting a pull request](https://github.com/iak-id/iak-api-server-js/pulls) when you see any bugs or issues, or you have any comments or requests.
-
