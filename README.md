@@ -37,7 +37,7 @@ new IAKPrepaid(credential).checkBalance().then((response) => {
 ## Documentation
 
 To see more information about how to connect with us, you can visit and see the documentation on this link:
-* [IAK API Node.js SDK documentation]() to see more details about how to connect with us through this SDK or library
+* [IAK API Node.js SDK documentation](https://api.iak.id/docs/sdk/docs/node-js/introduction.md) to see more details about how to connect with us through this SDK or library
 * [IAK API Documentation](https://api.iak.id/) to see more details about to connect with us through our API services
 
 ---
@@ -60,7 +60,7 @@ This library is supported by the following Node.js versions
 ---
 
 ## Changelogs
-You can check any updates or improvements we have done to this library to make this library more helpful for you on this [link]().
+You can check any updates or improvements we have done to this library to make this library more helpful for you on this [link](https://api.iak.id/docs/sdk/docs/node-js/changelog.md).
 
 ---
 
